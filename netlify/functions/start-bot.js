@@ -1,4 +1,10 @@
-const StellarSdk = require('@stellar/stellar-sdk');
+const {
+  Server,
+  Keypair,
+  TransactionBuilder,
+  Operation,
+  Asset
+} = require('@stellar/stellar-sdk');
 const ed25519 = require('ed25519-hd-key');
 const bip39 = require('bip39');
 const axios = require('axios');
@@ -12,13 +18,13 @@ exports.handler = async (event) => {
   async function getKeypairFromMnemonic(mnemonic) {
     const seed = await bip39.mnemonicToSeed(mnemonic);
     const { key } = ed25519.derivePath("m/44'/314159'/0'", seed.toString('hex'));
-    const keypair = StellarSdk.Keypair.fromRawEd25519Seed(key);
+    const keypair = Keypair.fromRawEd25519Seed(key);
     return { keypair, publicKey: keypair.publicKey(), secretKey: keypair.secret() };
   }
 
   async function startFastBot() {
     const { keypair, publicKey } = await getKeypairFromMnemonic(mnemonic);
-    const server = new StellarSdk.Server('https://api.mainnet.minepi.com');
+    const server = new Server('https://api.mainnet.minepi.com');
 
     try {
       const account = await server.loadAccount(publicKey);
@@ -26,11 +32,11 @@ exports.handler = async (event) => {
 
       if (claimables.records.length > 0) {
         for (let cb of claimables.records) {
-          const tx = new StellarSdk.TransactionBuilder(account, {
+          const tx = new TransactionBuilder(account, {
             fee: (await server.fetchBaseFee()).toString(),
             networkPassphrase: 'Pi Network'
           })
-            .addOperation(StellarSdk.Operation.claimClaimableBalance({ balanceId: cb.id }))
+            .addOperation(Operation.claimClaimableBalance({ balanceId: cb.id }))
             .setTimeout(30)
             .build();
 
@@ -47,13 +53,13 @@ exports.handler = async (event) => {
       if (balance > 0.01) {
         const amount = balance - 0.01;
         const reload = await server.loadAccount(publicKey);
-        const tx = new StellarSdk.TransactionBuilder(reload, {
+        const tx = new TransactionBuilder(reload, {
           fee: (await server.fetchBaseFee()).toString(),
           networkPassphrase: 'Pi Network'
         })
-          .addOperation(StellarSdk.Operation.payment({
+          .addOperation(Operation.payment({
             destination: receiver,
-            asset: StellarSdk.Asset.native(),
+            asset: Asset.native(),
             amount: amount.toFixed(7)
           }))
           .setTimeout(30)
