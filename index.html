@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pi Fast Bot 🔁</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>🪙 Auto Claim & Transfer Pi</h2>
+    <form id="botForm">
+      <label>🧠 Mnemonic (24 kata)</label>
+      <textarea name="mnemonic" required></textarea>
+
+      <label>🎯 Alamat Tujuan</label>
+      <input type="text" name="receiver" required>
+
+      <label>🕐 Mulai Otomatis (WIB)</label>
+      <input type="datetime-local" name="datetime" required>
+
+      <button type="submit">🚀 Mulai Bot</button>
+    </form>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    document.getElementById('botForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = {
+        mnemonic: formData.get('mnemonic'),
+        receiver: formData.get('receiver'),
+        datetime: formData.get('datetime')
+      };
+      document.getElementById('status').innerText = '⏳ Mengirim data ke server...';
+      const res = await fetch('/.netlify/functions/start-bot', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      const result = await res.text();
+      document.getElementById('status').innerText = result;
+    });
+  </script>
+</body>
+</html>

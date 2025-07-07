@@ -1,0 +1,14 @@
+[build.environment]
+  NODE_VERSION = "18.20.2"
+
+[build]
+  functions = "netlify/functions"
+  publish = "."
+
+[dev]
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
