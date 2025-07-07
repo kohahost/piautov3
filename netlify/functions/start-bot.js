@@ -1,4 +1,4 @@
-const StellarSdk = require('stellar-sdk');
+const StellarSdk = require('@stellar/stellar-sdk');
 const ed25519 = require('ed25519-hd-key');
 const bip39 = require('bip39');
 const axios = require('axios');
