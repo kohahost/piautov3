@@ -2,11 +2,11 @@
   "name": "pi-fast-bot",
   "version": "1.0.0",
   "dependencies": {
-    "axios": "^1.6.8",
-    "bip39": "^3.0.4",
-    "ed25519-hd-key": "^1.0.1",
-    "stellar-sdk": "^10.5.1"
-  },
+  "axios": "^1.6.8",
+  "bip39": "^3.0.4",
+  "ed25519-hd-key": "^1.0.1",
+  "@stellar/stellar-sdk": "^13.3.0"
+},
   "scripts": {
     "build": "echo 'No build step needed'"
   },
