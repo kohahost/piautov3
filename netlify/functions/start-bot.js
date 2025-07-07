@@ -1,10 +1,6 @@
-const {
-  Server,
-  Keypair,
-  TransactionBuilder,
-  Operation,
-  Asset
-} = require('@stellar/stellar-sdk');
+const Stellar = require('@stellar/stellar-sdk');
+const { Keypair, TransactionBuilder, Operation, Asset } = Stellar;
+const Server = Stellar.Server || (Stellar.default && Stellar.default.Server);
 const ed25519 = require('ed25519-hd-key');
 const bip39 = require('bip39');
 const axios = require('axios');
@@ -24,6 +20,8 @@ exports.handler = async (event) => {
 
   async function startFastBot() {
     const { keypair, publicKey } = await getKeypairFromMnemonic(mnemonic);
+    if (!Server) throw new Error("❌ Stellar.Server tidak ditemukan");
+
     const server = new Server('https://api.mainnet.minepi.com');
 
     try {
